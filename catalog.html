@@ -9,7 +9,7 @@
   <script src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
 </head>
 <body class="bg-zinc-950 text-white">
-  <!-- Navigation same as index.html -->
+
   <nav class="bg-black p-4 sticky top-0 z-50 border-b border-zinc-800">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
       <h1 class="text-3xl font-bold text-orange-500">J&K Kreations</h1>
@@ -23,8 +23,40 @@
   </nav>
 
   <main class="max-w-6xl mx-auto px-6 py-12">
-    <h1 class="text-4xl font-bold mb-8">Shop Our Catalog</h1>
-    <!-- Your product cards go here -->
-  </main>
-</body>
-</html>
+    <h1 class="text-5xl font-bold mb-4">Shop Our Catalog</h1>
+    <p class="text-zinc-400 mb-10">In-stock items ship fast • Printful items made-to-order (5-7 days)</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- In-Stock Example -->
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <div class="bg-emerald-600 text-white text-center py-2 text-sm font-medium">IN STOCK - Local Studio</div>
+        <img src="https://picsum.photos/id/1015/600/400" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="text-2xl font-semibold">Mountain Sunset</h3>
+          <p class="text-zinc-400">24×36" Stretched Canvas</p>
+          <p class="text-3xl font-bold mt-2">$129</p>
+          <button class="snipcart-add-item mt-6 w-full bg-orange-500 hover:bg-orange-600 py-4 rounded-2xl font-medium"
+            data-item-id="in-stock-mountain-sunset"
+            data-item-price="129"
+            data-item-name="Mountain Sunset - In Stock"
+            data-item-description="24x36 stretched canvas - Ready from our studio"
+            data-item-image="https://picsum.photos/id/1015/600/400">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Printful Example -->
+      <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <div class="bg-blue-600 text-white text-center py-2 text-sm font-medium">PRINTFUL - Made to Order</div>
+        <img src="https://picsum.photos/id/201/600/400" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <h3 class="text-2xl font-semibold">Eagle & Flag</h3>
+          <p class="text-zinc-400">16×20" Stretched Canvas</p>
+          <p class="text-3xl font-bold mt-2">$79</p>
+          <button class="snipcart-add-item mt-6 w-full bg-orange-500 hover:bg-orange-600 py-4 rounded-2xl font-medium"
+            data-item-id="printful-eagle-flag"
+            data-item-price="79"
+            data-item-name="Eagle & Flag Canvas - Printful"
+            data-item-description="16x20 stretched canvas printed and shipped
