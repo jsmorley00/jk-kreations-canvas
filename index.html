@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J&K Kreations Canvas Prints</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Snipcart -->
+  <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
+  <script src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
+  <script>
+    window.Snipcart = window.Snipcart || {};
+    window.Snipcart.settings = { publicApiKey: "YOUR_SNIPCART_PUBLIC_KEY_HERE" };
+  </script>
+</head>
+<body class="bg-zinc-950 text-white">
+
+  <!-- Navigation -->
+  <nav class="bg-black p-4 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">J&K Kreations</h1>
+      <div class="space-x-6">
+        <a href="#catalog" class="hover:text-orange-400">Catalog</a>
+        <a href="#design" class="hover:text-orange-400">Design Your Own</a>
+        <a href="#quote" class="hover:text-orange-400">Large Custom Quote</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-4 py-12">
+
+    <!-- Hero -->
+    <section class="text-center py-16">
+      <h2 class="text-5xl font-bold mb-4">Large Custom Canvases + Print-on-Demand</h2>
+      <p class="text-xl text-zinc-400">6ft × 8ft masterpieces • Smaller prints shipped worldwide</p>
+    </section>
+
+    <!-- Catalog Section (POD smaller prints) -->
+    <section id="catalog" class="mb-20">
+      <h2 class="text-3xl font-bold mb-8">Shop Our Catalog</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Example product - replace with your Printful products -->
+        <div class="bg-zinc-900 rounded-2xl p-6">
+          <img src="https://picsum.photos/id/1015/600/400" alt="Canvas" class="w-full rounded-xl mb-4">
+          <h3 class="text-xl">Mountain Sunset Canvas</h3>
+          <p class="text-sm text-zinc-400">24×36" Stretched Canvas</p>
+          <p class="text-2xl font-bold mt-2">$89</p>
+          <button 
+            class="snipcart-add-item mt-6 w-full bg-orange-500 hover:bg-orange-600 py-3 rounded-xl font-medium"
+            data-item-id="mountain-sunset"
+            data-item-price="89"
+            data-item-url="/"
+            data-item-description="24x36 stretched canvas print"
+            data-item-name="Mountain Sunset Canvas"
+            data-item-image="https://picsum.photos/id/1015/600/400">
+            Add to Cart
+          </button>
+        </div>
+        <!-- Add more products the same way -->
+      </div>
+    </section>
+
+    <!-- Design Your Own Section -->
+    <section id="design" class="mb-20 bg-zinc-900 rounded-3xl p-10">
+      <h2 class="text-3xl font-bold mb-6">Design Your Own Canvas</h2>
+      <div class="grid md:grid-cols-2 gap-10">
+        <div>
+          <input type="file" id="imageUpload" accept="image/*" class="block w-full mb-6">
+          <div id="preview" class="hidden border-2 border-dashed border-zinc-700 rounded-2xl p-4 text-center"></div>
+          
+          <div id="analysis" class="mt-6 hidden"></div>
+          
+          <button onclick="uploadAndUpscale()" id="upscaleBtn"
+                  class="hidden mt-6 w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-2xl font-medium">
+            Enhance with AI Upscale (+$8)
+          </button>
+        </div>
+
+        <div class="bg-black rounded-2xl p-6">
+          <h3 class="font-medium mb-4">How it works</h3>
+          <ul class="space-y-3 text-sm">
+            <li>1. Upload your photo</li>
+            <li>2. We instantly check print quality</li>
+            <li>3. If needed, pay small fee for AI upscale</li>
+            <li>4. Add to cart &amp; we print/ship</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Large Custom Quote -->
+    <section id="quote" class="mb-20">
+      <h2 class="text-3xl font-bold mb-8">Get a Quote for Large Custom Canvases</h2>
+      <!-- Paste your Tally embed code here -->
+      <div class="bg-zinc-900 rounded-3xl p-8">
+        <!-- Tally iframe goes here -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Snipcart cart button (floating) -->
+  <div class="snipcart-checkout-button fixed bottom-6 right-6 bg-orange-500 text-white px-6 py-3 rounded-2xl shadow-xl flex items-center gap-2 cursor-pointer">
+    🛒 <span id="cart-count" class="font-bold">0</span>
+  </div>
+
+  <script>
+    // Tailwind script already loaded via CDN
+    // Cloudinary config - replace with your values
+    const CLOUD_NAME = "YOUR_CLOUDINARY_CLOUD_NAME";
+    const UPLOAD_PRESET = "canvas_uploads";
+
+    let uploadedImageUrl = "";
+
+    function analyzeImage(file) {
+      const img = new Image();
+      img.onload = function() {
+        const width = img.width;
+        const height = img.height;
+        const dpiForPrint = 150; // minimum for good canvas print
+
+        // Example sizes - you can expand this
+        const sizes = [
+          {name: "16×20\"", widthIn: 16, heightIn: 20},
+          {name: "24×36\"", widthIn: 24, heightIn: 36}
+        ];
+
+        let resultHTML = `<h4 class="font-medium mb-3">Analysis Results</h4>`;
+        
+        sizes.forEach(size => {
+          const reqWidth = size.widthIn * dpiForPrint;
+          const reqHeight = size.heightIn * dpiForPrint;
+          const quality = (width >= reqWidth && height >= reqHeight) ? "✅ Excellent" : 
+                         (width >= reqWidth * 0.6) ? "⚠️ Good but upscalable" : "❌ Too low";
+          
+          resultHTML += `<div class="mb-3 p-4 bg-zinc-800 rounded-2xl">
+            <strong>${size.name}</strong> → ${quality}<br>
+            <small class="text-zinc-400">Required: ~${reqWidth}×${reqHeight} pixels</small>
+          </div>`;
+        });
+
+        document.getElementById("analysis").classList.remove("hidden");
+        document.getElementById("analysis").innerHTML = resultHTML;
+        
+        // Show upscale button if marginal quality
+        if (width < 2000) document.getElementById("upscaleBtn").classList.remove("hidden");
+      };
+      img.src = URL.createObjectURL(file);
+    }
+
+    document.getElementById("imageUpload").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      document.getElementById("preview").classList.remove("hidden");
+      document.getElementById("preview").innerHTML = `<img src="${URL.createObjectURL(file)}" class="max-h-96 mx-auto rounded-xl">`;
+      
+      analyzeImage(file);
+    });
+
+    async function uploadAndUpscale() {
+      const file = document.getElementById("imageUpload").files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      uploadedImageUrl = data.secure_url;
+
+      // Apply Cloudinary Super Resolution upscale (e_upscale)
+      const upscaledUrl = uploadedImageUrl.replace("/upload/", "/upload/e_upscale/");
+      
+      alert("✅ Image upscaled with Cloudinary AI!\n\nYou can now add this to your cart (in a real site we would auto-add it).");
+      console.log("Upscaled URL:", upscaledUrl);
+      // Here you would create a Snipcart product with the upscaled URL
+    }
+  </script>
+</body>
+</html>
