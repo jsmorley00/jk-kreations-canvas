@@ -26,27 +26,28 @@
     <h1 class="text-5xl font-bold mb-8">Design Your Own Canvas</h1>
 
     <div class="grid md:grid-cols-2 gap-12">
+      <!-- Left Column: Controls -->
       <div>
         <!-- Orientation -->
         <div class="mb-8">
-          <label class="block text-lg font-medium mb-3">Orientation</label>
+          <label class="block text-lg font-medium mb-3">1. Orientation</label>
           <div class="flex gap-8">
             <label class="flex items-center gap-3 cursor-pointer">
               <input type="radio" name="orientation" value="horizontal" checked class="w-5 h-5 accent-orange-500">
-              <span>Horizontal (Landscape)</span>
+              <span class="text-lg">Horizontal (Landscape)</span>
             </label>
             <label class="flex items-center gap-3 cursor-pointer">
               <input type="radio" name="orientation" value="vertical" class="w-5 h-5 accent-orange-500">
-              <span>Vertical (Portrait)</span>
+              <span class="text-lg">Vertical (Portrait)</span>
             </label>
           </div>
         </div>
 
         <!-- Size -->
         <div class="mb-8">
-          <label class="block text-lg font-medium mb-3">Canvas Size</label>
+          <label class="block text-lg font-medium mb-3">2. Canvas Size</label>
           <select id="canvasSize" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg">
-            <option value="">Select size...</option>
+            <option value="">Select a size...</option>
             <option value='{"label":"8×10","w":8,"h":10}'>8 × 10"</option>
             <option value='{"label":"11×14","w":11,"h":14}'>11 × 14"</option>
             <option value='{"label":"12×16","w":12,"h":16}'>12 × 16"</option>
@@ -59,25 +60,30 @@
           </select>
         </div>
 
-        <div id="uploadArea">
-          <label class="block text-lg font-medium mb-3">Upload Your Image</label>
-          <input type="file" id="imageUpload" accept="image/*" class="block w-full text-sm text-zinc-400 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:bg-orange-500 file:text-white">
+        <!-- Image Upload -->
+        <div>
+          <label class="block text-lg font-medium mb-3">3. Upload Your Image</label>
+          <input type="file" id="imageUpload" accept="image/*" 
+                 class="block w-full text-sm text-zinc-400 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:bg-orange-500 file:text-white">
         </div>
 
         <div id="preview" class="hidden mt-6 border-2 border-dashed border-zinc-700 rounded-3xl p-6"></div>
         <div id="analysis" class="hidden mt-8"></div>
 
-        <button onclick="uploadAndUpscale()" id="upscaleBtn" class="hidden mt-8 w-full bg-emerald-600 hover:bg-emerald-500 py-5 rounded-3xl font-semibold text-lg">
+        <button onclick="uploadAndUpscale()" id="upscaleBtn"
+                class="hidden mt-8 w-full bg-emerald-600 hover:bg-emerald-500 py-5 rounded-3xl font-semibold text-lg">
           ✨ Enhance with AI Upscale (+$8)
         </button>
 
-        <button onclick="addUpscaledToCart()" id="addToCartBtn" class="hidden mt-4 w-full bg-orange-500 hover:bg-orange-600 py-5 rounded-3xl font-semibold text-lg">
+        <button onclick="addUpscaledToCart()" id="addToCartBtn"
+                class="hidden mt-4 w-full bg-orange-500 hover:bg-orange-600 py-5 rounded-3xl font-semibold text-lg">
           🛒 Add This Canvas to Cart
         </button>
       </div>
 
+      <!-- Right Column: Result -->
       <div id="result" class="hidden">
-        <h3 class="font-semibold text-xl mb-4">Before vs After</h3>
+        <h3 class="font-semibold text-xl mb-4">Before vs After AI Upscale</h3>
         <div class="grid grid-cols-2 gap-6" id="beforeAfter"></div>
       </div>
     </div>
@@ -87,9 +93,124 @@
     const CLOUD_NAME = "domnywtiz";
     const UPLOAD_PRESET = "canvas_uploads";
     let upscaledImageUrl = "";
+    let selectedSize = null;
 
-    // (Full Design Your Own script from previous version - let me know if you want it expanded)
-    // Paste the full script from your last working design.html here if needed
+    // Orientation & Size listeners
+    document.querySelectorAll('input[name="orientation"]').forEach(radio => {
+      radio.addEventListener("change", () => {});
+    });
+
+    document.getElementById("canvasSize").addEventListener("change", (e) => {
+      if (e.target.value) selectedSize = JSON.parse(e.target.value);
+    });
+
+    function analyzeImage(file) {
+      if (!selectedSize) {
+        alert("Please select a canvas size first.");
+        return;
+      }
+
+      const img = new Image();
+      img.onload = function() {
+        const width = img.width;
+        const height = img.height;
+
+        let reqWidth = selectedSize.w * 200;
+        let reqHeight = selectedSize.h * 200;
+
+        // Swap if vertical
+        if (document.querySelector('input[name="orientation"]:checked').value === "vertical") {
+          [reqWidth, reqHeight] = [reqHeight, reqWidth];
+        }
+
+        let html = `<h4 class="font-semibold text-xl mb-4">Quality Analysis — ${selectedSize.label}"</h4>`;
+        html += `<p class="mb-4 text-zinc-400">Required: ~${reqWidth} × ${reqHeight} pixels (200 DPI)</p>`;
+
+        const isExcellent = width >= reqWidth * 1.1 && height >= reqHeight * 1.1;
+        const isGood = width >= reqWidth * 0.65 && height >= reqHeight * 0.65;
+
+        if (isExcellent) {
+          html += `<div class="bg-emerald-900/30 border border-emerald-500 p-6 rounded-2xl">✅ Excellent quality — Ready to print!</div>`;
+        } else if (isGood) {
+          html += `<div class="bg-amber-900/30 border border-amber-500 p-6 rounded-2xl">⚠️ Good but can be improved with AI Upscale</div>`;
+        } else {
+          html += `<div class="bg-red-900/30 border border-red-500 p-6 rounded-2xl">❌ Too low resolution for this size.<br><small>Try a smaller canvas or higher quality image.</small></div>`;
+        }
+
+        document.getElementById("analysis").classList.remove("hidden");
+        document.getElementById("analysis").innerHTML = html;
+
+        if (isGood && !isExcellent) {
+          document.getElementById("upscaleBtn").classList.remove("hidden");
+        }
+      };
+      img.src = URL.createObjectURL(file);
+    }
+
+    document.getElementById("imageUpload").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const preview = document.getElementById("preview");
+      preview.classList.remove("hidden");
+      preview.innerHTML = `<img src="${URL.createObjectURL(file)}" class="max-h-96 mx-auto rounded-2xl">`;
+
+      analyzeImage(file);
+    });
+
+    async function uploadAndUpscale() {
+      const file = document.getElementById("imageUpload").files[0];
+      if (!file) return alert("Please upload an image first");
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
+
+      try {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+
+        upscaledImageUrl = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/c_limit,w_2000/e_upscale/q_auto:good/${data.public_id}`;
+
+        // Show before / after
+        document.getElementById("result").classList.remove("hidden");
+        document.getElementById("beforeAfter").innerHTML = `
+          <div class="text-center">
+            <p class="mb-2 font-medium">Original</p>
+            <img src="${data.secure_url}" class="rounded-2xl max-h-80 mx-auto">
+          </div>
+          <div class="text-center">
+            <p class="mb-2 font-medium">AI Upscaled</p>
+            <img src="${upscaledImageUrl}" class="rounded-2xl max-h-80 mx-auto border-2 border-emerald-500">
+          </div>
+        `;
+
+        document.getElementById("upscaleBtn").classList.add("hidden");
+        document.getElementById("addToCartBtn").classList.remove("hidden");
+
+      } catch (err) {
+        console.error(err);
+        alert("Upload failed. Please try again.");
+      }
+    }
+
+    function addUpscaledToCart() {
+      if (!upscaledImageUrl) return alert("Please upscale an image first");
+
+      Snipcart.api.cart.items.add({
+        id: "custom-canvas-" + Date.now(),
+        name: "Custom AI-Upscaled Canvas",
+        price: 89,
+        url: window.location.href,
+        description: "Customer uploaded & AI enhanced canvas print",
+        image: upscaledImageUrl,
+      }).then(() => {
+        alert("✅ Added to cart successfully!");
+      });
+    }
   </script>
 </body>
 </html>
