@@ -18,7 +18,6 @@
 </head>
 <body class="bg-zinc-950 text-white">
 
-  <!-- Navigation (same as before) -->
   <nav class="bg-black p-4 sticky top-0 z-50 border-b border-zinc-800">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
       <h1 class="text-3xl font-bold text-orange-500">J&K Kreations</h1>
@@ -32,6 +31,36 @@
 
   <main class="max-w-6xl mx-auto px-6 py-12">
 
+    <!-- Hero -->
+    <section class="text-center py-16">
+      <h2 class="text-5xl font-bold mb-4">Big. Beautiful. Custom.</h2>
+      <p class="text-xl text-zinc-400">6ft × 8ft canvases • Print-on-Demand smaller prints • Your image or ours</p>
+    </section>
+
+    <!-- Catalog Section -->
+    <section id="catalog" class="mb-20">
+      <h2 class="text-4xl font-bold mb-8">Shop Our Catalog</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+          <img src="https://picsum.photos/id/1015/600/400" class="w-full h-64 object-cover">
+          <div class="p-6">
+            <h3 class="text-2xl font-semibold">Mountain Sunset</h3>
+            <p class="text-zinc-400">24×36" Stretched Canvas</p>
+            <p class="text-3xl font-bold mt-2">$89</p>
+            <button class="snipcart-add-item mt-6 w-full bg-orange-500 hover:bg-orange-600 py-4 rounded-2xl font-medium text-lg"
+              data-item-id="mountain-sunset"
+              data-item-price="89"
+              data-item-name="Mountain Sunset Canvas"
+              data-item-description="24x36 stretched canvas print"
+              data-item-image="https://picsum.photos/id/1015/600/400">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        <!-- Add more products here later -->
+      </div>
+    </section>
+
     <!-- Design Your Own Section -->
     <section id="design" class="mb-20 bg-zinc-900 rounded-3xl p-10">
       <h2 class="text-4xl font-bold mb-8">Design Your Own Canvas</h2>
@@ -40,25 +69,31 @@
           <input type="file" id="imageUpload" accept="image/*" class="block w-full text-sm text-zinc-400 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:bg-orange-500 file:text-white">
 
           <div id="preview" class="hidden mt-6 border-2 border-dashed border-zinc-700 rounded-3xl p-6"></div>
-          
           <div id="analysis" class="hidden mt-8"></div>
-          
+
           <button onclick="uploadAndUpscale()" id="upscaleBtn"
                   class="hidden mt-8 w-full bg-emerald-600 hover:bg-emerald-500 py-5 rounded-3xl font-semibold text-lg">
             ✨ Enhance with AI Upscale (+$8)
           </button>
 
-          <!-- New: Add to Cart button after upscale -->
           <button onclick="addUpscaledToCart()" id="addToCartBtn"
                   class="hidden mt-4 w-full bg-orange-500 hover:bg-orange-600 py-5 rounded-3xl font-semibold text-lg">
-            🛒 Add Upscaled Canvas to Cart
+            🛒 Add Upscaled Canvas to Cart ($89)
           </button>
         </div>
 
         <div id="result" class="hidden">
-          <h3 class="font-semibold text-xl mb-4">Before & After</h3>
-          <div class="grid grid-cols-2 gap-4" id="beforeAfter"></div>
+          <h3 class="font-semibold text-xl mb-4">Before vs After Upscale</h3>
+          <div class="grid grid-cols-2 gap-6" id="beforeAfter"></div>
         </div>
+      </div>
+    </section>
+
+    <!-- Large Custom Quote -->
+    <section id="quote">
+      <h2 class="text-4xl font-bold mb-8">Get a Quote for Large Custom Canvases (6ft x 8ft etc.)</h2>
+      <div class="bg-zinc-900 rounded-3xl p-8">
+        <iframe src="https://tally.so/r/eqNW4O" width="100%" height="800" frameborder="0" style="border:none;"></iframe>
       </div>
     </section>
 
@@ -69,29 +104,23 @@
     const UPLOAD_PRESET = "canvas_uploads";
     let upscaledImageUrl = "";
 
-    // ... (analyzeImage function stays the same) ...
     function analyzeImage(file) {
       const img = new Image();
       img.onload = function() {
         const width = img.width;
         const height = img.height;
-
         let html = `<h4 class="font-semibold text-xl mb-4">📊 Quality Analysis</h4>`;
-
         const sizes = [
           {name: "16×20\"", w: 2400, h: 3000},
           {name: "24×36\"", w: 3600, h: 5400}
         ];
-
         sizes.forEach(size => {
           const quality = (width >= size.w && height >= size.h) ? "✅ Excellent" : 
                          (width >= size.w * 0.65) ? "⚠️ Good but upscalable" : "❌ Too Low";
           html += `<div class="bg-zinc-800 p-5 rounded-2xl mb-4"><strong>${size.name}</strong><br><span class="text-sm">${quality}</span></div>`;
         });
-
         document.getElementById("analysis").classList.remove("hidden");
         document.getElementById("analysis").innerHTML = html;
-
         if (width < 3000) document.getElementById("upscaleBtn").classList.remove("hidden");
       };
       img.src = URL.createObjectURL(file);
@@ -100,11 +129,9 @@
     document.getElementById("imageUpload").addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) return;
-
       const preview = document.getElementById("preview");
       preview.classList.remove("hidden");
       preview.innerHTML = `<img src="${URL.createObjectURL(file)}" class="max-h-96 mx-auto rounded-2xl">`;
-
       analyzeImage(file);
     });
 
@@ -117,47 +144,51 @@
       formData.append("upload_preset", UPLOAD_PRESET);
 
       try {
+        console.log("🚀 Uploading to Cloudinary...");
         const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
           method: "POST",
           body: formData
         });
         const data = await res.json();
-        
-        upscaledImageUrl = data.secure_url.replace("/upload/", "/upload/e_upscale/");
+        console.log("✅ Upload response:", data);
 
-        // Show before & after
-        const resultDiv = document.getElementById("result");
-        resultDiv.classList.remove("hidden");
-        resultDiv.querySelector("#beforeAfter").innerHTML = `
-          <div><p class="text-center mb-2">Original</p><img src="${data.secure_url}" class="rounded-2xl"></div>
-          <div><p class="text-center mb-2">AI Upscaled</p><img src="${upscaledImageUrl}" class="rounded-2xl"></div>
+        // Strong upscale transformation
+        upscaledImageUrl = data.secure_url.replace("/upload/", "/upload/c_scale,w_2000/e_upscale/q_auto/");
+
+        console.log("🔗 Original:", data.secure_url);
+        console.log("🔗 Upscaled:", upscaledImageUrl);
+
+        document.getElementById("result").classList.remove("hidden");
+        document.getElementById("beforeAfter").innerHTML = `
+          <div class="text-center">
+            <p class="mb-2 font-medium">Original</p>
+            <img src="${data.secure_url}" class="rounded-2xl max-h-80 mx-auto">
+          </div>
+          <div class="text-center">
+            <p class="mb-2 font-medium">AI Upscaled (2000px)</p>
+            <img src="${upscaledImageUrl}" class="rounded-2xl max-h-80 mx-auto border-2 border-emerald-500">
+          </div>
         `;
 
         document.getElementById("upscaleBtn").classList.add("hidden");
         document.getElementById("addToCartBtn").classList.remove("hidden");
 
-        alert("✅ Image successfully upscaled!\n\nReview the before/after and click 'Add to Cart' below.");
       } catch (err) {
-        alert("Upload failed. Please try again.");
+        console.error("Upload error:", err);
+        alert("Upload failed. Check console (F12) for details.");
       }
     }
 
     function addUpscaledToCart() {
-      if (!upscaledImageUrl) return alert("Please upscale an image first");
-
+      if (!upscaledImageUrl) return alert("Please upscale first");
       Snipcart.api.cart.items.add({
-        id: "custom-upscaled-canvas-" + Date.now(),
-        name: "Custom AI-Upscaled Canvas Print",
+        id: "custom-canvas-" + Date.now(),
+        name: "Custom AI-Upscaled Canvas",
         price: 89,
         url: window.location.href,
-        description: "Customer uploaded & AI enhanced image - Ready to print",
+        description: "AI enhanced customer image - High quality print ready",
         image: upscaledImageUrl,
-        customFields: [
-          { name: "Image URL", value: upscaledImageUrl }
-        ]
-      }).then(() => {
-        alert("✅ Added to cart! You can now checkout.");
-      });
+      }).then(() => alert("✅ Added to cart!"));
     }
   </script>
 </body>
