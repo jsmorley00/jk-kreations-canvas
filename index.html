@@ -5,16 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>J&K Kreations | Custom Canvas Prints</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Snipcart -->
-  <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css" />
-  <script>
-    window.SnipcartSettings = {
-      publicApiKey: 'MjJhYTkxMDAtMzZkYi00YzYwLWJkYWQtZWQwYzM0Mjg1OWFhNjM5MTMwMjI5Njg5ODQ3MTQ3',
-      loadStrategy: 'on-user-interaction',
-    };
-  </script>
-  <script src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
 </head>
 <body class="bg-zinc-950 text-white">
 
@@ -22,80 +12,23 @@
     <div class="max-w-6xl mx-auto flex justify-between items-center">
       <h1 class="text-3xl font-bold text-orange-500">J&K Kreations</h1>
       <div class="space-x-8 text-lg">
-        <a href="#catalog" class="hover:text-orange-400">Catalog</a>
-        <a href="#design" class="hover:text-orange-400">Design Your Own</a>
-        <a href="#quote" class="hover:text-orange-400">Large Custom</a>
+        <a href="index.html" class="hover:text-orange-400">Home</a>
+        <a href="catalog.html" class="hover:text-orange-400">Catalog</a>
+        <a href="design.html" class="hover:text-orange-400">Design Your Own</a>
+        <a href="quote.html" class="hover:text-orange-400">Large Custom</a>
       </div>
     </div>
   </nav>
 
-  <main class="max-w-6xl mx-auto px-6 py-12">
-
-    <!-- Hero -->
-    <section class="text-center py-16">
-      <h2 class="text-5xl font-bold mb-4">Big. Beautiful. Custom.</h2>
-      <p class="text-xl text-zinc-400">6ft × 8ft canvases • Print-on-Demand smaller prints</p>
-    </section>
-
-    <!-- ==================== IMPROVED CATALOG ==================== -->
-    <section id="catalog" class="mb-20">
-      <h2 class="text-4xl font-bold mb-8">Shop Our Catalog</h2>
-      <p class="text-zinc-400 mb-8">In-stock items ship fast from our studio • Printful items are made-to-order</p>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-        <!-- Example In-Stock Item -->
-        <div class="bg-zinc-900 rounded-3xl overflow-hidden">
-          <div class="bg-emerald-600 text-white text-xs font-medium px-4 py-1 text-center">IN STOCK • Local Pickup or Fast Ship</div>
-          <img src="https://picsum.photos/id/1015/600/400" class="w-full h-64 object-cover">
-          <div class="p-6">
-            <h3 class="text-2xl font-semibold">Mountain Sunset</h3>
-            <p class="text-zinc-400">24×36" Stretched Canvas</p>
-            <p class="text-3xl font-bold mt-2">$129</p>
-            <button class="snipcart-add-item mt-6 w-full bg-orange-500 hover:bg-orange-600 py-4 rounded-2xl font-medium text-lg"
-              data-item-id="in-stock-mountain-sunset"
-              data-item-price="129"
-              data-item-name="Mountain Sunset Canvas - In Stock"
-              data-item-description="24x36 stretched canvas - Ready to ship from studio"
-              data-item-image="https://picsum.photos/id/1015/600/400"
-              data-item-custom1-name="Shipping Preference"
-              data-item-custom1-options="Local Pickup|Standard Shipping (+$15)">
-              Add to Cart
-            </button>
-          </div>
-        </div>
-
-        <!-- Example Printful Item -->
-        <div class="bg-zinc-900 rounded-3xl overflow-hidden">
-          <div class="bg-blue-600 text-white text-xs font-medium px-4 py-1 text-center">PRINTFUL • Made to Order (5-7 days)</div>
-          <img src="https://picsum.photos/id/201/600/400" class="w-full h-64 object-cover">
-          <div class="p-6">
-            <h3 class="text-2xl font-semibold">Eagle Freedom</h3>
-            <p class="text-zinc-400">16×20" Stretched Canvas</p>
-            <p class="text-3xl font-bold mt-2">$79</p>
-            <button class="snipcart-add-item mt-6 w-full bg-orange-500 hover:bg-orange-600 py-4 rounded-2xl font-medium text-lg"
-              data-item-id="printful-eagle"
-              data-item-price="79"
-              data-item-name="Eagle Freedom Canvas - Printful"
-              data-item-description="16x20 stretched canvas printed & shipped by Printful"
-              data-item-image="https://picsum.photos/id/201/600/400"
-              data-item-custom1-name="Note for Printful"
-              data-item-custom1-value="Customer uploaded design coming soon">
-              Add to Cart
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Design Your Own and Quote sections remain the same as your last version -->
-
+  <main class="max-w-6xl mx-auto px-6 py-20 text-center">
+    <h2 class="text-6xl font-bold mb-6">Big. Beautiful.<br>Custom Canvases</h2>
+    <p class="text-2xl text-zinc-400 mb-10">Local studio • Print-on-Demand • Your image or ours</p>
+    
+    <div class="flex flex-col sm:flex-row gap-6 justify-center">
+      <a href="catalog.html" class="bg-orange-500 hover:bg-orange-600 px-10 py-6 rounded-3xl text-xl font-semibold">Shop Catalog</a>
+      <a href="design.html" class="bg-white text-black hover:bg-zinc-200 px-10 py-6 rounded-3xl text-xl font-semibold">Design Your Own</a>
+      <a href="quote.html" class="bg-zinc-800 hover:bg-zinc-700 px-10 py-6 rounded-3xl text-xl font-semibold">Large Custom Quote</a>
+    </div>
   </main>
-
-  <script>
-    // Your existing Design Your Own script goes here (from previous version)
-    // ... paste your current Design Your Own <script> content here ...
-  </script>
 </body>
 </html>
